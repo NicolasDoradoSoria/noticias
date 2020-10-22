@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{Fragment, useState, useEffect} from "react";
+import Formulario from "./componentes/Formulario";
+import Header from "./componentes/Header";
+import Noticias from "./componentes/Noticias";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function App(){
+
+  const [categoria, setcategoria] = useState('')
+  const [noticias, setnoticias] = useState([])
+  useEffect(() => {
+    const consultarAPI = async () => {
+      let url = `http://newsapi.org/v2/top-headlines?country=AR&category=${categoria}&apiKey=0b258088e68c4fdca01d5d147c9f2c58`;
+
+      const respuesta = await fetch(url)
+      const noticias = await respuesta.json()
+
+      setnoticias(noticias.articles)
+    }
+    consultarAPI()
+  }, [categoria])
+ 
+
+    return (
+      <Fragment>
+        <Header titulo="Noticias" />
+        <div className="container white">
+          <Formulario 
+          setcategoria= {setcategoria}
+          
+          />
+          <Noticias noticias={noticias} />
+        </div>
+      </Fragment>
+    );
+  
 }
 
 export default App;
